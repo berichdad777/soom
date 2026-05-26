@@ -1,0 +1,749 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<title>숨 — 불멍</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: #000;
+    width: 100vw;
+    min-height: 100vh;
+    overflow-x: hidden;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  }
+
+  /* 첫 화면 — 스크롤과 함께 올라감 */
+  .hero {
+    position: relative;
+    width: 100%;
+    height: 100vh;
+    overflow: hidden;
+  }
+
+  /* 배경 영상 2개 교차 */
+  .bg-video {
+    position: absolute;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    object-fit: cover;
+    object-position: center center;
+    z-index: 0;
+    transition: opacity 1.5s ease;
+  }
+  #video-a { opacity: 1; }
+  #video-b { opacity: 0; }
+
+  /* 창틀 비네트 */
+  .vignette {
+    position: absolute;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    z-index: 2;
+    pointer-events: none;
+    background: radial-gradient(ellipse at center,
+      transparent 38%,
+      rgba(0,0,0,0.3) 68%,
+      rgba(0,0,0,0.72) 100%
+    );
+  }
+
+  /* 불빛 글로우 */
+  .fire-glow {
+    position: absolute;
+    bottom: 0; left: 0;
+    width: 100%; height: 50%;
+    z-index: 3;
+    pointer-events: none;
+    background: radial-gradient(ellipse at 50% 100%,
+      rgba(255,90,10,0.13) 0%,
+      rgba(255,50,0,0.05) 50%,
+      transparent 70%
+    );
+    animation: glowPulse 4s ease-in-out infinite;
+  }
+  @keyframes glowPulse {
+    0%, 100% { opacity: 0.7; }
+    50%       { opacity: 1.0; }
+  }
+
+  /* UI */
+  .ui {
+    position: absolute;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    z-index: 10;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-between;
+    padding: 2.2rem 1.8rem;
+    transition: opacity 0.7s ease;
+  }
+  .ui.hidden { opacity: 0; pointer-events: none; }
+
+  /* 상단 */
+  .top-bar {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .logo {
+    font-size: 15px;
+    font-weight: 600;
+    letter-spacing: 0.22em;
+    color: rgba(255,255,255,0.6);
+    text-transform: uppercase;
+  }
+  .hide-btn {
+    font-size: 12px;
+    font-weight: 500;
+    color: rgba(255,255,255,0.35);
+    background: none;
+    border: 1px solid rgba(255,255,255,0.12);
+    border-radius: 99px;
+    padding: 5px 14px;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .hide-btn:hover { color: rgba(255,255,255,0.75); border-color: rgba(255,255,255,0.35); }
+
+  /* 중앙 문구 */
+  .center-text {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2rem;
+  }
+  .center-title {
+    font-size: 52px;
+    font-weight: 700;
+    color: rgba(255,255,255,0.88);
+    letter-spacing: 0.22em;
+    text-align: center;
+    text-shadow: 0 0 50px rgba(255,100,30,0.5);
+  }
+  .center-sub {
+    font-size: 17px;
+    font-weight: 500;
+    color: rgba(255,255,255,0.75);
+    letter-spacing: 0.08em;
+    text-align: center;
+  }
+
+  /* 중앙 재생 버튼 — rainymood 스타일 */
+  .play-btn {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    border: 2px solid rgba(255,255,255,0.7);
+    background: transparent;
+    color: rgba(255,255,255,0.9);
+    font-size: 28px;
+    cursor: pointer;
+    transition: all 0.25s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    line-height: 1;
+  }
+  .play-btn:hover {
+    background: rgba(255,255,255,0.12);
+    border-color: #fff;
+    color: #fff;
+    transform: scale(1.06);
+  }
+
+  /* 볼륨 컨트롤 영역 */
+  .volume-group {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    align-items: center;
+  }
+  .volume-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .volume-label {
+    font-size: 12px;
+    color: rgba(255,255,255,0.7);
+    letter-spacing: 0.08em;
+    width: 52px;
+    text-align: right;
+  }
+  .volume-icon {
+    font-size: 14px;
+    color: rgba(255,255,255,0.7);
+    width: 20px;
+    text-align: center;
+  }
+  .volume-slider {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 120px;
+    height: 2px;
+    background: rgba(255,255,255,0.25);
+    border-radius: 2px;
+    outline: none;
+    cursor: pointer;
+    transition: opacity 0.3s;
+  }
+  .volume-slider::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.85);
+    cursor: pointer;
+    transition: transform 0.15s;
+  }
+  .volume-slider::-webkit-slider-thumb:hover { transform: scale(1.2); }
+  .volume-slider::-moz-range-thumb {
+    width: 14px; height: 14px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.85);
+    border: none; cursor: pointer;
+  }
+  .volume-slider.muted { opacity: 0.3; }
+
+  /* 비 토글 버튼 */
+  .rain-toggle {
+    font-size: 11px;
+    color: rgba(255,255,255,0.45);
+    background: none;
+    border: 1px solid rgba(255,255,255,0.2);
+    border-radius: 99px;
+    padding: 3px 12px;
+    cursor: pointer;
+    letter-spacing: 0.08em;
+    transition: all 0.2s;
+    white-space: nowrap;
+  }
+  .rain-toggle:hover { border-color: rgba(255,255,255,0.5); color: rgba(255,255,255,0.8); }
+  .rain-toggle.off { color: rgba(255,255,255,0.2); border-color: rgba(255,255,255,0.1); text-decoration: line-through; }
+
+  /* 하단 */
+  .bottom-bar {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0;
+  }
+
+  /* 탭 힌트 */
+  .tap-hint {
+    position: absolute;
+    bottom: 2rem;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 11px;
+    color: rgba(255,255,255,0.18);
+    z-index: 11;
+    letter-spacing: 0.12em;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 1s ease;
+    white-space: nowrap;
+  }
+  .tap-hint.show { opacity: 1; }
+
+  /* 로딩 */
+  #loading {
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    background: #080400;
+    z-index: 100;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 1.6rem;
+    transition: opacity 1s ease;
+  }
+  #loading.fade-out { opacity: 0; pointer-events: none; }
+  .loading-logo { font-size: 34px; font-weight: 200; color: rgba(255,150,50,0.85); letter-spacing: 0.35em; }
+  .loading-sub { font-size: 12px; color: rgba(255,255,255,0.25); letter-spacing: 0.18em; }
+  .loading-bar-wrap { width: 100px; height: 1px; background: rgba(255,255,255,0.08); }
+  .loading-bar { height: 1px; width: 0; background: rgba(255,140,40,0.55); transition: width 0.25s ease; }
+  /* 스크롤 화살표 */
+  .scroll-hint {
+    position: absolute;
+    bottom: 2rem;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 10;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+    opacity: 0;
+    animation: fadeInScroll 1s ease 2s forwards;
+    pointer-events: none;
+  }
+  @keyframes fadeInScroll {
+    to { opacity: 1; }
+  }
+  .scroll-hint span {
+    font-size: 11px;
+    color: rgba(255,255,255,0.3);
+    letter-spacing: 0.15em;
+  }
+  .scroll-arrow {
+    width: 20px;
+    height: 20px;
+    border-right: 1px solid rgba(255,255,255,0.25);
+    border-bottom: 1px solid rgba(255,255,255,0.25);
+    transform: rotate(45deg);
+    animation: bounce 2s ease-in-out infinite;
+  }
+  @keyframes bounce {
+    0%, 100% { transform: rotate(45deg) translateY(0); }
+    50%       { transform: rotate(45deg) translateY(4px); }
+  }
+
+  /* 첫 화면 — 스크롤과 함께 올라감 */
+  .hero {
+    position: relative;
+    width: 100%;
+    height: 100vh;
+    overflow: hidden;
+  }
+
+  /* 하단 섹션 */
+  .bottom-section {
+    position: relative;
+    z-index: 20;
+    background: #080500;
+    margin-top: 20vh;
+    box-shadow: 0 -20px 60px rgba(0,0,0,0.8);
+  }
+
+  /* 소개 섹션 */
+  .intro-section {
+    padding: 7rem 2rem 6rem;
+    max-width: 680px;
+    margin: 0 auto;
+    text-align: center;
+  }
+  .intro-logo {
+    font-size: 13px;
+    letter-spacing: 0.3em;
+    color: rgba(255,160,50,0.6);
+    text-transform: uppercase;
+    margin-bottom: 2.5rem;
+  }
+  .intro-title {
+    font-size: 28px;
+    font-weight: 300;
+    color: rgba(255,255,255,0.85);
+    line-height: 1.6;
+    letter-spacing: 0.02em;
+    margin-bottom: 2rem;
+  }
+  .intro-title em {
+    font-style: normal;
+    color: rgba(255,160,50,0.9);
+  }
+  .intro-desc {
+    font-size: 15px;
+    color: rgba(255,255,255,0.35);
+    line-height: 2;
+    letter-spacing: 0.03em;
+  }
+  .intro-divider {
+    width: 40px;
+    height: 1px;
+    background: rgba(255,160,50,0.3);
+    margin: 3rem auto;
+  }
+
+  /* 씬 카드 섹션 */
+  .scenes-section {
+    padding: 0 2rem 8rem;
+    max-width: 800px;
+    margin: 0 auto;
+  }
+  .scenes-label {
+    font-size: 11px;
+    letter-spacing: 0.25em;
+    color: rgba(255,255,255,0.2);
+    text-transform: uppercase;
+    text-align: center;
+    margin-bottom: 2.5rem;
+  }
+  .scenes-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 16px;
+  }
+  .scene-card {
+    border-radius: 16px;
+    overflow: hidden;
+    border: 1px solid rgba(255,255,255,0.06);
+    background: rgba(255,255,255,0.03);
+    cursor: pointer;
+    transition: all 0.25s;
+    position: relative;
+  }
+  .scene-card:hover { border-color: rgba(255,255,255,0.15); transform: translateY(-3px); }
+  .scene-card-thumb {
+    width: 100%;
+    height: 130px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 40px;
+    position: relative;
+  }
+  .scene-card-thumb.fire   { background: linear-gradient(160deg, #1a0800, #3d1200); }
+  .scene-card-thumb.water  { background: linear-gradient(160deg, #00101a, #001e30); }
+  .scene-card-thumb.bowl   { background: linear-gradient(160deg, #0d0d1a, #1a1030); }
+  .scene-card-thumb.forest { background: linear-gradient(160deg, #010d04, #021a08); }
+  .scene-card-body { padding: 1rem 1.2rem 1.2rem; }
+  .scene-card-title {
+    font-size: 15px;
+    font-weight: 500;
+    color: rgba(255,255,255,0.75);
+    margin-bottom: 4px;
+  }
+  .scene-card-desc {
+    font-size: 12px;
+    color: rgba(255,255,255,0.3);
+    line-height: 1.6;
+  }
+  .scene-badge {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    font-size: 10px;
+    padding: 3px 10px;
+    border-radius: 99px;
+    letter-spacing: 0.08em;
+  }
+  .scene-badge.now    { background: rgba(255,140,30,0.2); color: rgba(255,140,30,0.9); border: 1px solid rgba(255,140,30,0.3); }
+  .scene-badge.coming { background: rgba(255,255,255,0.05); color: rgba(255,255,255,0.2); border: 1px solid rgba(255,255,255,0.08); }
+
+  /* 푸터 */
+  .footer {
+    border-top: 1px solid rgba(255,255,255,0.05);
+    padding: 2rem;
+    text-align: center;
+  }
+  .footer p {
+    font-size: 12px;
+    color: rgba(255,255,255,0.15);
+    letter-spacing: 0.1em;
+  }
+</style>
+</head>
+<body>
+
+<!-- 로딩 -->
+<div id="loading">
+  <div class="loading-logo">숨</div>
+  <div class="loading-bar-wrap"><div class="loading-bar" id="loading-bar"></div></div>
+  <div class="loading-sub" id="loading-sub">비오는 날, 불멍 준비 중</div>
+</div>
+
+<!-- 오디오 -->
+<audio id="fire-audio" loop><source src="fire.mp3" type="audio/mpeg"></audio>
+<audio id="rain-audio" loop><source src="rain.mp3" type="audio/mpeg"></audio>
+
+<!-- 첫 화면 고정 영역 -->
+<div class="hero">
+
+  <video id="video-a" class="bg-video" muted playsinline>
+    <source src="fire.mp4" type="video/mp4">
+  </video>
+  <video id="video-b" class="bg-video" muted playsinline>
+    <source src="fire.mp4" type="video/mp4">
+  </video>
+
+  <div class="vignette"></div>
+  <div class="fire-glow"></div>
+
+  <div class="ui" id="ui">
+    <div class="top-bar">
+      <span class="logo">SOOM · 숨</span>
+      <button class="hide-btn" onclick="hideUI()">화면만 보기</button>
+    </div>
+    <div class="center-text">
+      <div class="center-title">SOOM</div>
+      <button class="play-btn" id="play-btn" onclick="togglePlay()">
+        <svg id="icon-play" xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="rgba(255,255,255,0.9)"><polygon points="5,3 19,12 5,21"/></svg>
+        <svg id="icon-pause" xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="rgba(255,255,255,0.9)" style="display:none"><rect x="5" y="3" width="4" height="18"/><rect x="15" y="3" width="4" height="18"/></svg>
+      </button>
+      <div class="volume-group">
+        <div class="volume-row">
+          <span class="volume-label">모닥불</span>
+          <span class="volume-icon" id="fire-icon">🔥</span>
+          <input class="volume-slider" id="fire-slider" type="range" min="0" max="1" step="0.01" value="1.0" oninput="setFireVolume(this.value)">
+        </div>
+        <div class="volume-row">
+          <span class="volume-label">비</span>
+          <span class="volume-icon" id="rain-icon">🌧</span>
+          <input class="volume-slider" id="rain-slider" type="range" min="0" max="1" step="0.01" value="1.0" oninput="setRainVolume(this.value)">
+          <button class="rain-toggle" id="rain-toggle" onclick="toggleRain()">ON</button>
+        </div>
+      </div>
+      <div class="center-sub">비 내리는 밤, 불 앞에 잠시 머물다 가세요.</div>
+    </div>
+    <div class="bottom-bar"></div>
+  </div>
+
+  <div class="tap-hint" id="tap-hint">화면을 터치하면 나타납니다</div>
+
+  <div class="scroll-hint">
+    <span>SCROLL</span>
+    <div class="scroll-arrow"></div>
+  </div>
+
+</div><!-- /hero -->
+
+<!-- 하단 섹션 — 스크롤 시 위로 올라와 영상 덮음 -->
+<div class="bottom-section">
+
+  <div class="intro-section">
+    <div class="intro-logo">SOOM · 숨</div>
+    <div class="intro-title">
+      유튜브 없이,<br>
+      광고 없이,<br>
+      <em>그냥 집중하세요.</em>
+    </div>
+    <div class="intro-divider"></div>
+    <div class="intro-desc">
+      SOOM은 잠깐 멈추고 싶을 때 찾아오는 공간입니다.<br>
+      알고리즘도, 추천 영상도, 댓글도 없어요.<br><br>
+      무언가를 하고 있어도, 아무것도 안 해도 괜찮아요.<br>
+      그냥 틀어놓고, 지금 이 순간에 머물러 보세요.
+    </div>
+  </div>
+
+  <div class="scenes-section">
+    <div class="scenes-label">Scenes</div>
+    <div class="scenes-grid">
+
+      <div class="scene-card" onclick="window.scrollTo({top:0, behavior:'smooth'})">
+        <div class="scene-card-thumb fire">🔥
+          <span class="scene-badge now">지금 감상 중</span>
+        </div>
+        <div class="scene-card-body">
+          <div class="scene-card-title">불멍</div>
+          <div class="scene-card-desc">비 내리는 밤,<br>모닥불 앞에서</div>
+        </div>
+      </div>
+
+      <div class="scene-card">
+        <div class="scene-card-thumb water">💧
+          <span class="scene-badge coming">Coming Soon</span>
+        </div>
+        <div class="scene-card-body">
+          <div class="scene-card-title">물멍</div>
+          <div class="scene-card-desc">흐르는 물소리와<br>함께 비워내기</div>
+        </div>
+      </div>
+
+      <div class="scene-card">
+        <div class="scene-card-thumb bowl">🎵
+          <span class="scene-badge coming">Coming Soon</span>
+        </div>
+        <div class="scene-card-body">
+          <div class="scene-card-title">싱잉볼</div>
+          <div class="scene-card-desc">깊은 진동으로<br>마음을 고요하게</div>
+        </div>
+      </div>
+
+      <div class="scene-card">
+        <div class="scene-card-thumb forest">🌿
+          <span class="scene-badge coming">Coming Soon</span>
+        </div>
+        <div class="scene-card-body">
+          <div class="scene-card-title">숲멍</div>
+          <div class="scene-card-desc">바람과 새소리,<br>숲 속에서 숨쉬기</div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <div class="footer">
+    <p>© 2025 SOOM · 숨 &nbsp;·&nbsp; Just breathe.</p>
+  </div>
+
+</div>
+
+<script>
+// ── 로딩 ──
+const loadingEl = document.getElementById('loading');
+const loadingBar = document.getElementById('loading-bar');
+const videoA = document.getElementById('video-a');
+const videoB = document.getElementById('video-b');
+const fireAudio = document.getElementById('fire-audio');
+const rainAudio = document.getElementById('rain-audio');
+
+// 초기 볼륨 설정
+fireAudio.volume = 1.0;
+rainAudio.volume = 1.0;
+
+let loadProgress = 0;
+const loadInterval = setInterval(() => {
+  loadProgress = Math.min(loadProgress + Math.random() * 18, 88);
+  loadingBar.style.width = loadProgress + '%';
+}, 180);
+
+function hideLoading() {
+  clearInterval(loadInterval);
+  loadingBar.style.width = '100%';
+  setTimeout(() => {
+    loadingEl.classList.add('fade-out');
+    setTimeout(() => loadingEl.style.display = 'none', 1000);
+  }, 300);
+}
+
+// 영상 준비되면 → 로딩 숨기고 영상만 재생 (소리는 재생버튼으로)
+videoA.addEventListener('canplaythrough', () => {
+  hideLoading();
+}, { once: true });
+
+setTimeout(() => {
+  if (loadingEl.style.display !== 'none') hideLoading();
+}, 3000);
+
+function userStart() {}
+
+// ── 영상 A/B 교차 재생 ──
+let activeVideo = videoA;
+let standbyVideo = videoB;
+const CROSSFADE_BEFORE = 1.5;
+
+function startPlayback() {
+  videoA.currentTime = 0;
+  videoB.currentTime = 0;
+  videoA.style.opacity = 1;
+  videoB.style.opacity = 0;
+  videoA.play();
+}
+startPlayback();
+
+function checkCrossfade() {
+  const v = activeVideo;
+  const remaining = v.duration - v.currentTime;
+
+  if (!isNaN(v.duration) && remaining <= CROSSFADE_BEFORE && remaining > 0) {
+    if (standbyVideo.paused) {
+      standbyVideo.currentTime = 0;
+      standbyVideo.play();
+    }
+    const fadeRatio = 1 - (remaining / CROSSFADE_BEFORE);
+    activeVideo.style.opacity = 1 - fadeRatio;
+    standbyVideo.style.opacity = fadeRatio;
+
+    if (remaining < 0.05) {
+      activeVideo.pause();
+      activeVideo.style.opacity = 0;
+      standbyVideo.style.opacity = 1;
+      [activeVideo, standbyVideo] = [standbyVideo, activeVideo];
+    }
+  }
+  requestAnimationFrame(checkCrossfade);
+}
+checkCrossfade();
+
+// 소리 재생 상태 (영상과 무관하게 독립)
+let audioPlaying = false;
+
+function fadeInAudio(audioEl, targetVol, duration) {
+  audioEl.volume = 0;
+  audioEl.play();
+  const steps = 60;
+  const interval = duration / steps;
+  const increment = targetVol / steps;
+  let step = 0;
+  const timer = setInterval(() => {
+    step++;
+    audioEl.volume = Math.min(parseFloat((increment * step).toFixed(3)), targetVol);
+    if (step >= steps) clearInterval(timer);
+  }, interval);
+}
+
+function togglePlay() {
+  const iconPlay  = document.getElementById('icon-play');
+  const iconPause = document.getElementById('icon-pause');
+  if (!audioPlaying) {
+    const fireVol = parseFloat(document.getElementById('fire-slider').value);
+    const rainVol = parseFloat(document.getElementById('rain-slider').value);
+    fadeInAudio(fireAudio, fireVol, 3000);
+    if (rainOn) fadeInAudio(rainAudio, rainVol, 3000);
+    audioPlaying = true;
+    iconPlay.style.display  = 'none';
+    iconPause.style.display = 'block';
+  } else {
+    fireAudio.pause();
+    rainAudio.pause();
+    audioPlaying = false;
+    iconPlay.style.display  = 'block';
+    iconPause.style.display = 'none';
+  }
+}
+
+// ── 볼륨 제어 ──
+let rainOn = true;
+
+function setFireVolume(val) {
+  fireAudio.volume = parseFloat(val);
+  document.getElementById('fire-icon').textContent = val == 0 ? '🔇' : '🔥';
+}
+
+function setRainVolume(val) {
+  rainAudio.volume = parseFloat(val);
+  document.getElementById('rain-icon').textContent = val == 0 ? '🔇' : '🌧';
+}
+
+function toggleRain() {
+  rainOn = !rainOn;
+  const btn = document.getElementById('rain-toggle');
+  const slider = document.getElementById('rain-slider');
+  if (rainOn) {
+    rainAudio.play();
+    slider.classList.remove('muted');
+    btn.textContent = 'ON';
+    btn.classList.remove('off');
+  } else {
+    rainAudio.pause();
+    slider.classList.add('muted');
+    btn.textContent = 'OFF';
+    btn.classList.add('off');
+  }
+}
+
+// ── UI 숨기기 ──
+let uiVisible = true;
+let tapHintTimeout;
+
+function hideUI() {
+  uiVisible = false;
+  document.getElementById('ui').classList.add('hidden');
+  const hint = document.getElementById('tap-hint');
+  hint.classList.add('show');
+  clearTimeout(tapHintTimeout);
+  tapHintTimeout = setTimeout(() => hint.classList.remove('show'), 2500);
+}
+
+document.body.addEventListener('click', (e) => {
+  // play-btn, hide-btn 클릭은 UI 토글 무시
+  if (e.target.closest('#play-btn') || e.target.closest('.hide-btn')) return;
+  if (!uiVisible) {
+    uiVisible = true;
+    document.getElementById('ui').classList.remove('hidden');
+    document.getElementById('tap-hint').classList.remove('show');
+  }
+});
+</script>
+</body>
+</html>
