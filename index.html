@@ -4,6 +4,8 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
 <title>숨 — 불멍</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&display=swap" rel="stylesheet">
 <style>
   * { box-sizing: border-box; margin: 0; padding: 0; }
 
@@ -91,11 +93,11 @@
     justify-content: space-between;
     align-items: center;
   }
-  .logo {
-    font-size: 15px;
+  .logo-small {
+    font-size: 13px;
     font-weight: 600;
     letter-spacing: 0.22em;
-    color: rgba(255,255,255,0.6);
+    color: rgba(255,255,255,0.5);
     text-transform: uppercase;
   }
   .hide-btn {
@@ -111,121 +113,139 @@
   }
   .hide-btn:hover { color: rgba(255,255,255,0.75); border-color: rgba(255,255,255,0.35); }
 
-  /* 중앙 문구 */
+  /* 중앙 레이아웃 */
   .center-text {
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 2rem;
-  }
-  .center-title {
-    font-size: 52px;
-    font-weight: 700;
-    color: rgba(255,255,255,0.88);
-    letter-spacing: 0.22em;
-    text-align: center;
-    text-shadow: 0 0 50px rgba(255,100,30,0.5);
-  }
-  .center-sub {
-    font-size: 17px;
-    font-weight: 500;
-    color: rgba(255,255,255,0.75);
-    letter-spacing: 0.08em;
-    text-align: center;
+    gap: 1.4rem;
   }
 
-  /* 중앙 재생 버튼 — rainymood 스타일 */
+  /* 메인 로고 */
+  .center-title {
+    font-size: 64px;
+    font-weight: 800;
+    color: rgba(255,255,255,0.95);
+    letter-spacing: 0.3em;
+    text-align: center;
+    text-shadow: 0 0 60px rgba(255,100,30,0.5);
+  }
+
+  /* 서브 문구 */
+  .center-sub {
+    font-size: 14px;
+    font-weight: 500;
+    color: rgba(255,255,255,0.55);
+    letter-spacing: 0.14em;
+    text-align: center;
+    text-transform: uppercase;
+  }
+
+  /* 재생 버튼 */
   .play-btn {
-    width: 80px;
-    height: 80px;
+    width: 110px;
+    height: 110px;
     border-radius: 50%;
-    border: 2px solid rgba(255,255,255,0.7);
+    border: 6px solid rgba(255,255,255,0.92);
     background: transparent;
-    color: rgba(255,255,255,0.9);
-    font-size: 28px;
     cursor: pointer;
     transition: all 0.25s;
     display: flex;
     align-items: center;
     justify-content: center;
-    line-height: 1;
   }
   .play-btn:hover {
     background: rgba(255,255,255,0.12);
     border-color: #fff;
-    color: #fff;
     transform: scale(1.06);
   }
 
-  /* 볼륨 컨트롤 영역 */
+  /* 볼륨 슬라이더 */
   .volume-group {
     display: flex;
     flex-direction: column;
-    gap: 14px;
-    align-items: center;
+    gap: 12px;
+    align-items: flex-start;
+    width: 260px;
   }
   .volume-row {
     display: flex;
     align-items: center;
     gap: 10px;
-  }
-  .volume-label {
-    font-size: 12px;
-    color: rgba(255,255,255,0.7);
-    letter-spacing: 0.08em;
-    width: 52px;
-    text-align: right;
+    width: 100%;
   }
   .volume-icon {
-    font-size: 14px;
-    color: rgba(255,255,255,0.7);
-    width: 20px;
+    font-size: 20px;
+    width: 26px;
     text-align: center;
+    flex-shrink: 0;
   }
   .volume-slider {
     -webkit-appearance: none;
     appearance: none;
-    width: 120px;
-    height: 2px;
-    background: rgba(255,255,255,0.25);
-    border-radius: 2px;
+    width: 180px;
+    flex: none;
+    height: 3px;
+    background: rgba(255,255,255,0.35);
+    border-radius: 3px;
     outline: none;
     cursor: pointer;
     transition: opacity 0.3s;
   }
   .volume-slider::-webkit-slider-thumb {
     -webkit-appearance: none;
-    width: 14px;
-    height: 14px;
+    width: 16px; height: 16px;
     border-radius: 50%;
-    background: rgba(255,255,255,0.85);
+    background: rgba(255,255,255,0.95);
     cursor: pointer;
     transition: transform 0.15s;
   }
-  .volume-slider::-webkit-slider-thumb:hover { transform: scale(1.2); }
+  .volume-slider::-webkit-slider-thumb:hover { transform: scale(1.25); }
   .volume-slider::-moz-range-thumb {
-    width: 14px; height: 14px;
+    width: 16px; height: 16px;
     border-radius: 50%;
-    background: rgba(255,255,255,0.85);
+    background: rgba(255,255,255,0.95);
     border: none; cursor: pointer;
   }
   .volume-slider.muted { opacity: 0.3; }
 
-  /* 비 토글 버튼 */
+  /* 비 토글 */
   .rain-toggle {
     font-size: 11px;
-    color: rgba(255,255,255,0.45);
+    font-weight: 600;
+    color: rgba(255,255,255,0.6);
     background: none;
-    border: 1px solid rgba(255,255,255,0.2);
+    border: 1.5px solid rgba(255,255,255,0.35);
     border-radius: 99px;
     padding: 3px 12px;
     cursor: pointer;
     letter-spacing: 0.08em;
     transition: all 0.2s;
-    white-space: nowrap;
+    flex-shrink: 0;
   }
-  .rain-toggle:hover { border-color: rgba(255,255,255,0.5); color: rgba(255,255,255,0.8); }
+  .rain-toggle:hover { border-color: rgba(255,255,255,0.7); color: #fff; }
   .rain-toggle.off { color: rgba(255,255,255,0.2); border-color: rgba(255,255,255,0.1); text-decoration: line-through; }
+
+  /* 메인 로고 — Rainy Mood 스타일 */
+  .center-title {
+    font-family: 'Playfair Display', Georgia, serif;
+    font-size: 52px;
+    font-weight: 400;
+    color: rgba(255,255,255,0.95);
+    letter-spacing: 0.08em;
+    text-align: center;
+    text-shadow: 0 2px 30px rgba(255,80,20,0.3);
+    line-height: 1;
+    display: flex;
+    align-items: baseline;
+    justify-content: center;
+  }
+  .logo-s {
+    font-size: 80px;
+    font-weight: 700;
+    line-height: 1;
+    display: inline-block;
+  }
 
   /* 하단 */
   .bottom-bar {
@@ -271,7 +291,67 @@
   .loading-sub { font-size: 12px; color: rgba(255,255,255,0.25); letter-spacing: 0.18em; }
   .loading-bar-wrap { width: 100px; height: 1px; background: rgba(255,255,255,0.08); }
   .loading-bar { height: 1px; width: 0; background: rgba(255,140,40,0.55); transition: width 0.25s ease; }
-  /* 스크롤 화살표 */
+  /* 4-7-8 호흡 가이드 — 폐 */
+  .breath-wrap {
+    position: absolute;
+    bottom: 2rem;
+    right: 2rem;
+    z-index: 15;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    cursor: pointer;
+    opacity: 0.3;
+    transition: opacity 0.4s;
+    user-select: none;
+  }
+  .breath-wrap:hover { opacity: 0.85; }
+  .breath-wrap.active { opacity: 1; }
+
+  .breath-lung-wrap {
+    position: relative;
+    width: 120px;
+    height: 120px;
+  }
+
+  /* 폐 SVG */
+  #breath-svg {
+    width: 120px;
+    height: 120px;
+    transition: transform 0s;
+  }
+  .lung-left, .lung-right {
+    transition: d 0s;
+  }
+
+  /* 페이즈 텍스트 */
+  .breath-info {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 3px;
+  }
+  .breath-label {
+    font-size: 13px;
+    color: rgba(255,200,120,0.85);
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    font-weight: 500;
+  }
+  .breath-count {
+    font-size: 30px;
+    font-weight: 300;
+    color: rgba(255,255,255,0.95);
+    font-variant-numeric: tabular-nums;
+    line-height: 1;
+  }
+  .breath-start-label {
+    font-size: 11px;
+    color: rgba(255,200,120,0.55);
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+  }
   .scroll-hint {
     position: absolute;
     bottom: 2rem;
@@ -452,17 +532,17 @@
 </div>
 
 <!-- 오디오 -->
-<audio id="fire-audio" loop><source src="fire.mp3" type="audio/mpeg"></audio>
-<audio id="rain-audio" loop><source src="rain.mp3" type="audio/mpeg"></audio>
+<audio id="fire-audio" loop><source src="https://pub-38f252e4716d407cbae41574db993a4d.r2.dev/fire.mp3" type="audio/mpeg"></audio>
+<audio id="rain-audio" loop><source src="https://pub-38f252e4716d407cbae41574db993a4d.r2.dev/rain.mp3" type="audio/mpeg"></audio>
 
 <!-- 첫 화면 고정 영역 -->
 <div class="hero">
 
   <video id="video-a" class="bg-video" muted playsinline>
-    <source src="fire.mp4" type="video/mp4">
+    <source src="https://pub-38f252e4716d407cbae41574db993a4d.r2.dev/fire.mp4" type="video/mp4">
   </video>
   <video id="video-b" class="bg-video" muted playsinline>
-    <source src="fire.mp4" type="video/mp4">
+    <source src="https://pub-38f252e4716d407cbae41574db993a4d.r2.dev/fire.mp4" type="video/mp4">
   </video>
 
   <div class="vignette"></div>
@@ -470,34 +550,96 @@
 
   <div class="ui" id="ui">
     <div class="top-bar">
-      <span class="logo">SOOM · 숨</span>
+      <span class="logo-small">SOOM · 숨</span>
       <button class="hide-btn" onclick="hideUI()">화면만 보기</button>
     </div>
+
     <div class="center-text">
-      <div class="center-title">SOOM</div>
+      <!-- 재생 버튼 -->
       <button class="play-btn" id="play-btn" onclick="togglePlay()">
-        <svg id="icon-play" xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="rgba(255,255,255,0.9)"><polygon points="5,3 19,12 5,21"/></svg>
-        <svg id="icon-pause" xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="rgba(255,255,255,0.9)" style="display:none"><rect x="5" y="3" width="4" height="18"/><rect x="15" y="3" width="4" height="18"/></svg>
+        <svg id="icon-play" xmlns="http://www.w3.org/2000/svg" width="46" height="46" viewBox="0 0 24 24" fill="rgba(255,255,255,0.95)"><polygon points="6,3 20,12 6,21"/></svg>
+        <svg id="icon-pause" xmlns="http://www.w3.org/2000/svg" width="46" height="46" viewBox="0 0 24 24" fill="rgba(255,255,255,0.95)" style="display:none"><rect x="5" y="3" width="4" height="18"/><rect x="15" y="3" width="4" height="18"/></svg>
       </button>
+
+      <!-- 볼륨 슬라이더들 -->
       <div class="volume-group">
         <div class="volume-row">
-          <span class="volume-label">모닥불</span>
           <span class="volume-icon" id="fire-icon">🔥</span>
           <input class="volume-slider" id="fire-slider" type="range" min="0" max="1" step="0.01" value="1.0" oninput="setFireVolume(this.value)">
         </div>
         <div class="volume-row">
-          <span class="volume-label">비</span>
-          <span class="volume-icon" id="rain-icon">🌧</span>
+          <span class="volume-icon" id="rain-icon">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M6 16.5L4.5 19M10 16.5L8.5 19M14 16.5L12.5 19M18 16.5L16.5 19" stroke="rgba(255,255,255,0.85)" stroke-width="1.8" stroke-linecap="round"/>
+              <path d="M5 13C3.34 13 2 11.66 2 10C2 8.34 3.34 7 5 7C5.1 7 5.2 7.01 5.29 7.02C5.77 5.26 7.39 4 9.3 4C10.7 4 11.95 4.65 12.79 5.66C13.17 5.56 13.58 5.5 14 5.5C16.48 5.5 18.5 7.52 18.5 10C18.5 10.17 18.49 10.34 18.47 10.5H19C20.1 10.5 21 11.4 21 12.5C21 13.6 20.1 14.5 19 14.5H5C5 14.5 5 13 5 13Z" fill="rgba(255,255,255,0.85)"/>
+            </svg>
+          </span>
           <input class="volume-slider" id="rain-slider" type="range" min="0" max="1" step="0.01" value="1.0" oninput="setRainVolume(this.value)">
           <button class="rain-toggle" id="rain-toggle" onclick="toggleRain()">ON</button>
         </div>
       </div>
+
+      <!-- 메인 로고 — S 크게 -->
+      <div class="center-title"><span class="logo-s">S</span>oom</div>
+
+      <!-- 서브 문구 -->
       <div class="center-sub">비 내리는 밤, 불 앞에 잠시 머물다 가세요.</div>
     </div>
+
     <div class="bottom-bar"></div>
   </div>
 
   <div class="tap-hint" id="tap-hint">화면을 터치하면 나타납니다</div>
+
+  <!-- 4-7-8 호흡 가이드 — 원 -->
+  <div class="breath-wrap" id="breath-wrap" onclick="toggleBreath()">
+    <div class="breath-lung-wrap">
+      <svg id="breath-svg" viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <radialGradient id="circleGrad" cx="40%" cy="35%" r="65%">
+            <stop offset="0%"   stop-color="rgba(255,200,100,0.5)"/>
+            <stop offset="100%" stop-color="rgba(200,80,20,0.1)"/>
+          </radialGradient>
+        </defs>
+
+        <!-- 외곽 링 (진행 표시) -->
+        <circle cx="60" cy="60" r="52"
+          fill="none"
+          stroke="rgba(255,255,255,0.06)"
+          stroke-width="1"/>
+        <circle id="breath-progress-ring" cx="60" cy="60" r="52"
+          fill="none"
+          stroke="rgba(255,190,80,0.6)"
+          stroke-width="1.2"
+          stroke-linecap="round"
+          stroke-dasharray="327"
+          stroke-dashoffset="327"
+          transform="rotate(-90 60 60)"/>
+
+        <!-- 메인 원 -->
+        <circle id="breath-main-circle" cx="60" cy="60" r="36"
+          fill="url(#circleGrad)"
+          stroke="rgba(255,170,60,0.3)"
+          stroke-width="1"/>
+
+        <!-- 텍스트 -->
+        <text id="breath-phase-text" x="60" y="46"
+          text-anchor="middle"
+          font-size="13"
+          letter-spacing="1"
+          fill="rgba(255,210,130,0.9)"
+          font-weight="600"
+          font-family="-apple-system, 'Apple SD Gothic Neo', sans-serif">4 · 7 · 8</text>
+        <text id="breath-num-text" x="60" y="80"
+          text-anchor="middle"
+          font-size="28"
+          font-weight="300"
+          fill="rgba(255,255,255,0.95)"
+          font-family="-apple-system, sans-serif">—</text>
+      </svg>
+    </div>
+    <div class="breath-start-label" id="breath-start-label">시작</div>
+  </div>
 
   <div class="scroll-hint">
     <span>SCROLL</span>
@@ -683,12 +825,16 @@ function togglePlay() {
     audioPlaying = true;
     iconPlay.style.display  = 'none';
     iconPause.style.display = 'block';
+    // 호흡도 같이 시작
+    if (!breathActive) startBreath();
   } else {
     fireAudio.pause();
     rainAudio.pause();
     audioPlaying = false;
     iconPlay.style.display  = 'block';
     iconPause.style.display = 'none';
+    // 호흡도 같이 정지
+    if (breathActive) stopBreath();
   }
 }
 
@@ -702,23 +848,26 @@ function setFireVolume(val) {
 
 function setRainVolume(val) {
   rainAudio.volume = parseFloat(val);
-  document.getElementById('rain-icon').textContent = val == 0 ? '🔇' : '🌧';
+  // SVG 아이콘이라 textContent 변경 안 함
 }
 
 function toggleRain() {
   rainOn = !rainOn;
-  const btn = document.getElementById('rain-toggle');
+  const btn    = document.getElementById('rain-toggle');
   const slider = document.getElementById('rain-slider');
+  const icon   = document.getElementById('rain-icon');
   if (rainOn) {
     rainAudio.play();
     slider.classList.remove('muted');
     btn.textContent = 'ON';
     btn.classList.remove('off');
+    icon.style.opacity = '1';
   } else {
     rainAudio.pause();
     slider.classList.add('muted');
     btn.textContent = 'OFF';
     btn.classList.add('off');
+    icon.style.opacity = '0.3';
   }
 }
 
@@ -736,14 +885,125 @@ function hideUI() {
 }
 
 document.body.addEventListener('click', (e) => {
-  // play-btn, hide-btn 클릭은 UI 토글 무시
-  if (e.target.closest('#play-btn') || e.target.closest('.hide-btn')) return;
+  if (e.target.closest('#play-btn') || e.target.closest('.hide-btn') || e.target.closest('#breath-wrap')) return;
   if (!uiVisible) {
     uiVisible = true;
     document.getElementById('ui').classList.remove('hidden');
     document.getElementById('tap-hint').classList.remove('show');
   }
 });
+
+// ── 4-7-8 호흡 가이드 — 원 ──
+const BREATH_PHASES = [
+  { name: '들숨', duration: 4,  targetR: 44, strokeColor: 'rgba(255,200,100,0.75)' },
+  { name: '멈춤', duration: 7,  targetR: 44, strokeColor: 'rgba(255,160,60,0.45)'  },
+  { name: '날숨', duration: 8,  targetR: 26, strokeColor: 'rgba(200,120,40,0.3)'   },
+];
+const RING_CIRCUMFERENCE = 2 * Math.PI * 52;
+
+let breathActive     = false;
+let breathPhaseIdx   = 0;
+let breathTimeLeft   = 0;
+let breathInterval   = null;
+let breathAnimFrame  = null;
+let breathPhaseStart = 0;
+let breathRFrom      = 26;
+
+function startBreath() {
+  breathActive = true;
+  document.getElementById('breath-wrap').classList.add('active');
+  document.getElementById('breath-start-label').textContent = '정지';
+  breathPhaseIdx   = 0;
+  breathTimeLeft   = BREATH_PHASES[0].duration;
+  breathPhaseStart = Date.now();
+  breathRFrom      = 26;
+  applyBreathPhaseUI();
+  if (breathInterval) clearInterval(breathInterval);
+  breathInterval = setInterval(breathTick, 1000);
+  animateBreathLoop();
+}
+
+function stopBreath() {
+  breathActive = false;
+  document.getElementById('breath-wrap').classList.remove('active');
+  document.getElementById('breath-start-label').textContent = '시작';
+  clearInterval(breathInterval);
+  cancelAnimationFrame(breathAnimFrame);
+  resetBreathUI();
+}
+
+function toggleBreath() {
+  breathActive ? stopBreath() : startBreath();
+}
+
+function breathTick() {
+  breathTimeLeft--;
+  document.getElementById('breath-num-text').textContent = breathTimeLeft;
+  if (breathTimeLeft <= 0) {
+    breathRFrom      = BREATH_PHASES[breathPhaseIdx].targetR;
+    breathPhaseIdx   = (breathPhaseIdx + 1) % BREATH_PHASES.length;
+    breathTimeLeft   = BREATH_PHASES[breathPhaseIdx].duration;
+    breathPhaseStart = Date.now();
+    applyBreathPhaseUI();
+  }
+}
+
+function applyBreathPhaseUI() {
+  const phase = BREATH_PHASES[breathPhaseIdx];
+  document.getElementById('breath-phase-text').textContent = phase.name;
+  document.getElementById('breath-num-text').textContent   = breathTimeLeft;
+  document.getElementById('breath-progress-ring').style.stroke = phase.strokeColor;
+}
+
+function easeInOutSine(t) { return -(Math.cos(Math.PI * t) - 1) / 2; }
+function easeOutSine(t)   { return Math.sin((t * Math.PI) / 2); }
+
+function animateBreathLoop() {
+  if (!breathActive) return;
+
+  const phase   = BREATH_PHASES[breathPhaseIdx];
+  const elapsed = Math.min((Date.now() - breathPhaseStart) / 1000, phase.duration);
+  const t       = elapsed / phase.duration;
+
+  // 이징
+  let eased;
+  if (phase.name === '들숨')      eased = easeInOutSine(t);
+  else if (phase.name === '날숨') eased = easeOutSine(t);
+  else                             eased = 1;
+
+  const r = breathRFrom + (phase.targetR - breathRFrom) * eased;
+
+  // 메인 원 크기
+  const circle = document.getElementById('breath-main-circle');
+  circle.setAttribute('r', r);
+
+  // 원 글로우 — 들숨에 밝아지고 날숨에 어두워짐
+  const glowAlpha = 0.1 + (r - 26) / (44 - 26) * 0.35;
+  circle.setAttribute('fill', `radial-gradient`); // gradient는 defs에서 관리
+  circle.style.filter = r > 35
+    ? `drop-shadow(0 0 ${(r-30)*0.8}px rgba(255,160,50,0.4))`
+    : 'none';
+
+  // 링 progress
+  const ratio  = elapsed / phase.duration;
+  const offset = RING_CIRCUMFERENCE * (1 - ratio);
+  document.getElementById('breath-progress-ring').style.strokeDashoffset = offset;
+
+  breathAnimFrame = requestAnimationFrame(animateBreathLoop);
+}
+
+function resetBreathUI() {
+  const circle = document.getElementById('breath-main-circle');
+  const ring   = document.getElementById('breath-progress-ring');
+
+  circle.setAttribute('r', '36');
+  circle.style.filter = 'none';
+  ring.style.strokeDashoffset = RING_CIRCUMFERENCE;
+  document.getElementById('breath-phase-text').textContent = '4 · 7 · 8';
+  document.getElementById('breath-num-text').textContent   = '—';
+  document.getElementById('breath-phase-text').setAttribute('y', '46');
+  document.getElementById('breath-num-text').setAttribute('y', '80');
+}
 </script>
 </body>
 </html>
